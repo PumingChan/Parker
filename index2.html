@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+	</style>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<script src="js/easeljs-0.7.1.min.js" type="text/javascript" charset="utf-8">
+	</script>
+	<script src="js/createjs7md9.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var snakelength=2,
+		snakearr=[new snake(200,200),new snake(192,200),new snake(238,254)],
+		snakeshepe=[],
+		snakewhere=39,
+		fruitwherexy=[],
+		headx=200,
+		heady=200,
+		stage,
+		snakeMap,
+		fruitshape;
+		function init() {
+				stage = new createjs.Stage("demoCanvas");
+				SnakeMap = new createjs.Shape();
+				SnakeMap.graphics.f("rgba(255,0,0,0.1)").r(0, 0, 800, 800).ef;
+				stage.addChild(SnakeMap);
+			    snakeshepe.length=snakearr.length;
+			    fruit ();
+			    fruitdraw();
+			    snakeshepe.length=snakearr.length;
+			for (var i=0;i<snakearr.length;i++) {
+				snakeshepe[i] = new createjs.Shape();
+			 	snakeshepe[i].graphics.f("black").r(snakearr[i].x,snakearr[i].y, 8, 8).ef;
+				stage.addChild(snakeshepe[i]);
+	            stage.update();
+			    }
+		
+	
+		}
+		
+			createjs.Ticker.setFPS(8);
+			createjs.Ticker.addEventListener("tick", handleTick);
+				function handleTick() {
+					move();
+			        stage.update();
+			    }
+		document.onkeydown = keydown;
+       function  keydown(){
+          switch (event.keyCode){
+          	case 37:
+          	    if(snakewhere!=37&&snakewhere!=39){
+          	    	snakewhere=37;
+          	    }
+          		break;
+            case 38:
+            if(snakewhere!=38&&snakewhere!=40){
+          	    	snakewhere=38;
+          	    }
+          	    break;
+          	case 39:
+          	if(snakewhere!=39&&snakewhere!=37){
+          	    	snakewhere=39;
+          	    }
+          		break;
+          	case 40:
+          	if(snakewhere!=40&&snakewhere!=38){
+          	    	snakewhere=40;
+          	    }
+          		break;
+          	default:
+          		break;
+          }
+        
+        }
+		function move () {
+         where();
+        	    snakeshepe.length=snakearr.length;
+         if(snakearr[0].x==fruitwherexy[0]&&snakearr[0].y==fruitwherexy[1]){
+         	eat();
+         	fruitdraw();
+         }
+         for (var i=0;i<snakeshepe.length;i++) {
+         stage.removeChild(snakeshepe[i]);
+         snakeshepe[i] = new createjs.Shape();
+         snakeshepe[i].graphics.f("black").r(snakearr[i].x,snakearr[i].y, 8, 8).ef;
+         stage.addChild(snakeshepe[i]);
+         }
+		}
+		function where () {
+		   	switch (snakewhere){
+		   		case 37:
+		   		run();
+		   		snakearr[0]=new snake(snakearr[0].x-=8,snakearr[0].y);
+		   		break;
+		   		case 38:
+		   		run();
+		   		snakearr[0]=new snake(snakearr[0].x,snakearr[0].y-=8);
+		   		break;
+		   		case 39:
+		   		run();
+		   		snakearr[0]=new snake(snakearr[0].x+=8,snakearr[0].y);
+		   		break;
+		   		case 40:
+		   		run();
+		   		snakearr[0]=new snake(snakearr[0].x,snakearr[0].y+=8);
+		   		break;
+		   	}
+		}
+		function run () {
+			for (var i=snakearr.length-1;i>0;i--) {
+				snakearr[i]=new snake(snakearr[i-1].x,snakearr[i-1].y);
+			}
+		}
+		function snake (x,y) {
+	     this.x=x;
+	     this.y=y;
+		}
+		function fruit () {
+	        fruitwherexy[0]= parseInt(800 * Math.random());
+	        fruitwherexy[1] = parseInt(600 * Math.random());
+	        fruitwherexy[0]=fruitwherexy[0]%8==0?fruitwherexy[0]:fruitwherexy[0]+(8-fruitwherexy[0]%8);
+	        fruitwherexy[1]=fruitwherexy[1]%8==0?fruitwherexy[1]:fruitwherexy[1]+(8-fruitwherexy[1]%8);
+			for (var i=0;i<snakearr.length;i++) {
+	        if(fruitwherexy[1]==snakearr[i].y&&fruitwherexy[0]==snakearr[i].x)
+		    fruitwherexy[0]= parseInt(800 * Math.random());
+	        fruitwherexy[1] = parseInt(600 * Math.random());
+	        fruitwherexy[0]=fruitwherexy[0]%8==0?fruitwherexy[0]:fruitwherexy[0]+(8-fruitwherexy[0]%8);
+	        fruitwherexy[1]=fruitwherexy[1]%8==0?fruitwherexy[1]:fruitwherexy[1]+(8-fruitwherexy[1]%8);
+			}
+		}
+        function fruitdraw () {
+        	fruit();
+         	stage.removeChild(fruitshape);
+         	fruitshape=new createjs.Shape();
+         	fruitshape.graphics.f("blue").r(fruitwherexy[0], fruitwherexy[1], 8, 8).ef;
+			stage.addChild(fruitshape);
+        
+        }
+        function eat () {
+        	 snakearr.unshift(new snake(fruitwherexy[0],fruitwherexy[1]));
+  
+
+        }
+	</script>
+	<body onLoad="init();">
+		<canvas id="demoCanvas" width="800" height="600">
+			alternate content
+		</canvas>
+	</body>
+
+</html>
